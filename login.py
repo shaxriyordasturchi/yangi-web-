@@ -4,8 +4,8 @@ from utils import create_user_table, add_user, login_user, hash_password
 def app():
     st.title("🔐 Foydalanuvchi Kirish")
 
-    # Jadvalni yaratish
-create_user_table()
+    # Jadvalni yaratish (faqat bir marta)
+    create_user_table()
 
     menu = ["Kirish", "Ro'yxatdan o'tish"]
     choice = st.radio("Amalni tanlang", menu)
@@ -36,7 +36,7 @@ create_user_table()
                 user = login_user(username, hashed_password)
                 if user:
                     st.success(f"Xush kelibsiz, {username}!")
-                    # Sessionga saqlaymiz va asosiy sahifaga o‘tamiz
+                    # Sessiyaga ma'lumot saqlaymiz
                     st.session_state.logged_in = True
                     st.session_state.username = username
                     st.experimental_rerun()
