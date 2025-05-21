@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-
+def app ();
 st.title("🏗️ Laboratoriya 2: OCDMA Kodlash Tahlili")
 
 # Parametrlar
