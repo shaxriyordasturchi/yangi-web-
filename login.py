@@ -5,7 +5,7 @@ def app():
     st.title("🔐 Foydalanuvchi Kirish")
 
     # Jadvalni yaratish
-    create_user_table()
+create_user_table()
 
     menu = ["Kirish", "Ro'yxatdan o'tish"]
     choice = st.radio("Amalni tanlang", menu)
