@@ -1,37 +1,43 @@
 import sqlite3
 import hashlib
-from fpdf import FPDF
-import streamlit as st
-
-DB_NAME = "users.db"
 
 def create_user_table():
-    conn = sqlite3.connect(DB_NAME)
+    """Foydalanuvchilar jadvalini yaratadi (agar mavjud bo'lmasa)."""
+    conn = sqlite3.connect("users.db")
     c = conn.cursor()
     c.execute('''
-        CREATE TABLE IF NOT EXISTS userstable(
+        CREATE TABLE IF NOT EXISTS userstable (
             username TEXT PRIMARY KEY,
-            password TEXT,
-            name TEXT,
-            age INTEGER
+            password TEXT NOT NULL
         )
     ''')
     conn.commit()
     conn.close()
 
-def add_user(username, password, name, age):
-    conn = sqlite3.connect(DB_NAME)
+def add_user(username, password):
+    """
+    Yangi foydalanuvchini qo'shadi.
+    Parol oldin hash qilingan bo'lishi kerak.
+    Agar foydalanuvchi allaqachon mavjud bo'lsa, False qaytaradi.
+    """
+    conn = sqlite3.connect("users.db")
     c = conn.cursor()
     try:
-        c.execute('INSERT INTO userstable(username, password, name, age) VALUES (?, ?, ?, ?)',
-                  (username, password, name, age))
+        c.execute('INSERT INTO userstable(username, password) VALUES (?, ?)', (username, password))
         conn.commit()
+        return True
     except sqlite3.IntegrityError:
-        st.error("Bu foydalanuvchi nomi allaqachon mavjud!")
-    conn.close()
+        # username allaqachon mavjud
+        return False
+    finally:
+        conn.close()
 
 def login_user(username, password):
-    conn = sqlite3.connect(DB_NAME)
+    """
+    Foydalanuvchini tekshiradi (username va hash qilingan password bo'yicha).
+    Agar topilsa, user malumotlarini qaytaradi, aks holda None.
+    """
+    conn = sqlite3.connect("users.db")
     c = conn.cursor()
     c.execute('SELECT * FROM userstable WHERE username = ? AND password = ?', (username, password))
     data = c.fetchone()
@@ -39,16 +45,7 @@ def login_user(username, password):
     return data
 
 def hash_password(password):
+    """
+    Parolni sha256 hash qiladi va hex formatda qaytaradi.
+    """
     return hashlib.sha256(password.encode()).hexdigest()
-
-def export_pdf(username, result_data):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt="Laboratoriya Natijalari", ln=True, align='C')
-    pdf.cell(200, 10, txt=f"Foydalanuvchi: {username}", ln=True)
-    pdf.ln(10)
-    for k, v in result_data.items():
-        pdf.cell(200, 10, txt=f"{k}: {v}", ln=True)
-    pdf.output("lab_report.pdf")
-    st.success("✅ PDF fayl yaratildi: lab_report.pdf")
