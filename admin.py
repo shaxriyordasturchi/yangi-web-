@@ -1,7 +1,6 @@
 import streamlit as st
 import sqlite3
 
-
 # CSS uslublari
 st.markdown("""
     <style>
@@ -47,7 +46,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Foydalanuvchilarni olish funksiyasi
 def get_users():
     conn = sqlite3.connect("users.db")
     c = conn.cursor()
@@ -92,39 +90,8 @@ def show_users_page():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    if st.button("Keyingi sahifaga o‘tish"):
-        st.session_state.page = 'results'
-
-def show_results_page():
-    st.markdown('<div class="header">🛠️ Admin Panel - Laboratoriya Natijalari</div>', unsafe_allow_html=True)
-    
-    st.markdown('<div class="section">', unsafe_allow_html=True)
-    st.subheader("Laboratoriya Natijalari (Namuna)")
-
-    sample_results = {
-        "Foydalanuvchi": "user123",
-        "Laboratoriya": "WDM Kanal Simulyatsiyasi",
-        "Natija": "Yaxshi",
-        "Sana": "2025-05-21"
-    }
-
-    for k, v in sample_results.items():
-        st.markdown(f"**{k}:** {v}")
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    if st.button("Orqaga qaytish"):
-        st.session_state.page = 'users'
-
 def app():
-    if 'page' not in st.session_state:
-        st.session_state.page = 'users'
-
-    if st.session_state.page == 'users':
-        show_users_page()
-    elif st.session_state.page == 'results':
-        show_results_page()
-
+    show_users_page()
 
 if __name__ == "__main__":
     app()
