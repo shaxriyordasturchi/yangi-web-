@@ -17,8 +17,11 @@ def app():
         if st.button("Ro'yxatdan o'tish"):
             if new_user and new_password:
                 hashed_password = hash_password(new_password)
-                add_user(new_user, hashed_password)
-                st.success("Ro'yxatdan muvaffaqiyatli o'tdingiz!")
+                success = add_user(new_user, hashed_password)  # <-- Shu yerda natijani olamiz
+                if success:
+                    st.success("Ro'yxatdan muvaffaqiyatli o'tdingiz!")
+                else:
+                    st.error("Bu foydalanuvchi nomi allaqachon mavjud!")
             else:
                 st.error("Iltimos, barcha maydonlarni to'ldiring!")
 
