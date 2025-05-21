@@ -14,9 +14,6 @@ def get_users():
 def admin_panel():
     st.title("🛠️ Admin Panel - Foydalanuvchilar Boshqaruvi")
 
-    if st.button("Yangilash"):
-        st.experimental_rerun()
-
     users = get_users()
 
     if users:
@@ -65,7 +62,7 @@ def app():
     else:
         st.success(f"Xush kelibsiz, {st.session_state['username']}!")
         page = st.radio("Amalni tanlang:", ("Admin Panel", "Laboratoriya"))
-        
+
         if page == "Admin Panel":
             admin_panel()
         elif page == "Laboratoriya":
