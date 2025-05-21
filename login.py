@@ -4,7 +4,6 @@ from utils import create_user_table, add_user, login_user, hash_password
 def app():
     st.title("🔐 Foydalanuvchi Kirish")
 
-    # Jadvalni yaratish (faqat bir marta)
     create_user_table()
 
     menu = ["Kirish", "Ro'yxatdan o'tish"]
@@ -36,10 +35,12 @@ def app():
                 user = login_user(username, hashed_password)
                 if user:
                     st.success(f"Xush kelibsiz, {username}!")
-                    # Sessiyaga ma'lumot saqlaymiz
                     st.session_state.logged_in = True
                     st.session_state.username = username
-                    st.experimental_rerun()
+                    try:
+                        st.rerun()
+                    except:
+                        st.experimental_rerun()
                 else:
                     st.error("Login yoki parol noto‘g‘ri!")
             else:
