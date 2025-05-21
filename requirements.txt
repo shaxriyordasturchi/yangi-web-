@@ -1,3 +1,15 @@
-git add requirements.txt
-git commit -m "Add requirements.txt with streamlit and fpdf"
-git push
+import subprocess
+import sys
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+try:
+    import fpdf
+except ImportError:
+    install("fpdf")
+
+try:
+    import streamlit
+except ImportError:
+    install("streamlit")
