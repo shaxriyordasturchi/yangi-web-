@@ -1,5 +1,6 @@
 import sqlite3
 import hashlib
+from fpdf import FPDF  # PDF yaratish uchun kutubxona
 
 def create_user_table():
     """Foydalanuvchilar jadvalini yaratadi (agar mavjud bo'lmasa)."""
@@ -49,3 +50,23 @@ def hash_password(password):
     Parolni sha256 hash qiladi va hex formatda qaytaradi.
     """
     return hashlib.sha256(password.encode()).hexdigest()
+
+def export_pdf(title, content, filename="lab_report.pdf"):
+    """
+    Matnli kontentni PDF faylga saqlaydi.
+    title - PDFning sarlavhasi
+    content - matn (string)
+    filename - saqlanadigan fayl nomi (default: lab_report.pdf)
+    """
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=14)
+    pdf.cell(200, 10, txt=title, ln=True, align='C')
+    pdf.ln(10)
+
+    pdf.set_font("Arial", size=12)
+    for line in content.split('\n'):
+        pdf.multi_cell(0, 10, line)
+
+    pdf.output(filename)
+    return filename
