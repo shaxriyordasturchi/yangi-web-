@@ -1,6 +1,7 @@
 import streamlit as st
 import sqlite3
 
+def app():
 
 # CSS uslublari
 st.markdown("""
