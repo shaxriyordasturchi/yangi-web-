@@ -1,23 +1,38 @@
 import streamlit as st
+import plotly.graph_objects as go
+import numpy as np
 
 def app():
-    st.title("Lab 4 - WDM/OCDMA Gibrid Arxitekturasi")
+    st.title("Lab 4: Hybrid WDM/OCDMA PON Arxitekturasi")
+
     st.write("""
-    Ushbu laboratoriyada WDM (Wavelength Division Multiplexing) va OCDMA (Optical Code Division Multiple Access) 
-    texnologiyalarining gibrid arxitekturasi haqida tushuncha beriladi. 
-    
-    Asosiy mavzular:
-    - WDM va OCDMA texnologiyalarining asosiy xususiyatlari
-    - Ularning birgalikda ishlash imkoniyatlari
-    - Signal integratsiyasi va kanallarni ajratish metodlari
-    - Gibrid tizim samaradorligini baholash
+    Ushbu laboratoriyada WDM va OCDMA texnologiyalarining kombinatsiyasi yordamida 
+    PON tizimining samaradorligini o‘rganamiz.
     """)
 
-    st.subheader("Gibrid tizim konfiguratsiyasi")
-    num_channels = st.slider("Kanallar soni (WDM)", 1, 16, 4)
-    num_codes = st.slider("Kodlar soni (OCDMA)", 1, 16, 4)
-    
-    total_capacity = num_channels * num_codes
-    st.write(f"Gibrid tizimning taxminiy maksimal kanallar soni: **{total_capacity}**")
+    kanal_soni = st.slider("Kanal sonini tanlang", 1, 16, 8)
 
-    st.info("Bu laboratoriya amaliy simulyatsiya emas, balki tushunchalar va parametrlarni o‘rganishga mo‘ljallangan.")
+    # Simulyatsiya uchun signal o'tish tezligi (Mbps) ni yaratamiz
+    # Har bir kanal uchun tasodifiy tezliklar
+    np.random.seed(42)
+    tezliklar = np.random.uniform(50, 150, kanal_soni)
+
+    # Grafik chizamiz
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=[f"Kanal {i+1}" for i in range(kanal_soni)],
+        y=tezliklar,
+        marker_color='lightskyblue'
+    ))
+
+    fig.update_layout(
+        title="Har bir kanal uchun o'tish tezligi (Mbps)",
+        xaxis_title="Kanal",
+        yaxis_title="Tezlik (Mbps)",
+        yaxis=dict(range=[0, 200])
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.info("Bu yerda haqiqiy simulyatsiya va tahlil kodini qo‘shishingiz mumkin.")
