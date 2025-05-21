@@ -17,12 +17,12 @@ def main():
     else:
         st.sidebar.title(f"Xush kelibsiz, {st.session_state.username}!")
         page = st.sidebar.selectbox("Sahifa tanlang", [
-            "Bosh sahifa",  
-            "Lab 1 - WDM Kanal Simulyatsiyasi", 
-            "Lab 2 - OCDMA Kodlash va Dekodlash", 
-            "Lab 3 - PON Tarmog‘i Tuzilishi",
-            "Lab 4 - WDM/OCDMA Gibrid Arxitekturasi",
-            "Lab 5 - Tarmoqlarda Xatolikni Tahlil va Tuzatish"
+            "Bosh sahifa",
+            "Lab 1 - WDM",
+            "Lab 2 - OCDMA",
+            "Lab 3 - PON",
+            "Lab 4 - Hybrid WDM/OCDMA",
+            "Lab 5 - Xatoliklarni Tuzatish"
         ])
 
         if page == "Bosh sahifa":
@@ -33,19 +33,19 @@ def main():
                 st.session_state.username = ""
                 st.experimental_rerun()
 
-        elif page == "Lab 1 - WDM Kanal Simulyatsiyasi":
+        elif page == "Lab 1 - WDM":
             lab1_wdm.app()
 
-        elif page == "Lab 2 - OCDMA Kodlash va Dekodlash":
+        elif page == "Lab 2 - OCDMA":
             lab2_ocdma.app()
 
-        elif page == "Lab 3 - PON Tarmog‘i Tuzilishi":
+        elif page == "Lab 3 - PON":
             lab3_pon.app()
 
-        elif page == "Lab 4 - WDM/OCDMA Gibrid Arxitekturasi":
+        elif page == "Lab 4 - Hybrid WDM/OCDMA":
             lab4_hybrid.app()
 
-        elif page == "Lab 5 - Tarmoqlarda Xatolikni Tahlil va Tuzatish":
+        elif page == "Lab 5 - Xatoliklarni Tuzatish":
             lab5_error_correction.app()
 
 if __name__ == "__main__":
