@@ -15,14 +15,12 @@ def app():
         new_password = st.text_input("Parol", type='password')
         if st.button("Ro'yxatdan o'tish"):
             if new_user and new_password:
-                hashed_password = hash_password(new_password)
-                success = add_user(new_user, hashed_password)
-                if success:
+                if add_user(new_user, hash_password(new_password)):
                     st.success("Ro'yxatdan muvaffaqiyatli o'tdingiz!")
                 else:
-                    st.error("Bu foydalanuvchi nomi allaqachon mavjud!")
+                    st.error("Foydalanuvchi allaqachon mavjud!")
             else:
-                st.error("Iltimos, barcha maydonlarni to'ldiring!")
+                st.error("Iltimos, maydonlarni to'ldiring!")
 
     elif choice == "Kirish":
         st.subheader("Kirish")
@@ -30,9 +28,11 @@ def app():
         password = st.text_input("Parol", type='password')
         if st.button("Kirish"):
             if username and password:
-                hashed_password = hash_password(password)
-                user = login_user(username, hashed_password)
+                user = login_user(username, hash_password(password))
                 if user:
                     st.success(f"Xush kelibsiz, {username}!")
-
-                    # 🔑 Foydalanuvchini tizimga kiritamiz
+                    st.session_state.logged_in = True
+                    st.session_state.username = username
+                    st.experimental_rerun()
+                else:
+                    st.error("Login yoki parol noto‘g‘ri!")
