@@ -1,42 +1,51 @@
 import streamlit as st
-from utils import create_user_table, add_user, login_user, hash_password
+import login
+import admin
+import lab1_wdm
+import lab2_ocdma
+import lab3_pon
 
 def app():
-    st.title("🔐 Foydalanuvchi Kirish")
+    # Session holatini tekshirish va o‘rnatish
+    if "logged_in" not in st.session_state:
+        st.session_state.logged_in = False
+    if "username" not in st.session_state:
+        st.session_state.username = ""
 
-    # Bazada userlar jadvalini yaratamiz (faqat bir marta)
-    create_user_table()
+    # Agar foydalanuvchi login qilmagan bo‘lsa
+    if not st.session_state.logged_in:
+        login.app()
+    else:
+        # Yon panel va sahifa tanlash
+        st.sidebar.title(f"👤 Xush kelibsiz, {st.session_state.username}!")
+        page = st.sidebar.selectbox("Sahifa tanlang", [
+            "🏠 Bosh sahifa",
+            "🛠️ Admin",
+            "🔬 Lab 1 - WDM",
+            "💡 Lab 2 - OCDMA",
+            "🌐 Lab 3 - PON"
+        ])
 
-    menu = ["Kirish", "Ro'yxatdan o'tish"]
-    choice = st.radio("Amalni tanlang", menu)
+        if page == "🏠 Bosh sahifa":
+            st.title("🏠 Bosh sahifa")
+            st.success("Siz tizimga muvaffaqiyatli kirdingiz. Quyidagi yon panel orqali sahifalarni tanlang.")
+            if st.button("🔓 Chiqish"):
+                st.session_state.logged_in = False
+                st.session_state.username = ""
+                st.experimental_rerun()
 
-    if choice == "Ro'yxatdan o'tish":
-        st.subheader("Ro'yxatdan o'tish")
-        new_user = st.text_input("Foydalanuvchi nomi")
-        new_password = st.text_input("Parol", type='password')
-        if st.button("Ro'yxatdan o'tish"):
-            if new_user and new_password:
-                hashed_password = hash_password(new_password)
-                success = add_user(new_user, hashed_password)  # <-- Shu yerda natijani olamiz
-                if success:
-                    st.success("Ro'yxatdan muvaffaqiyatli o'tdingiz!")
-                else:
-                    st.error("Bu foydalanuvchi nomi allaqachon mavjud!")
-            else:
-                st.error("Iltimos, barcha maydonlarni to'ldiring!")
+        elif page == "🛠️ Admin":
+            admin.app()
 
-    elif choice == "Kirish":
-        st.subheader("Kirish")
-        username = st.text_input("Foydalanuvchi nomi")
-        password = st.text_input("Parol", type='password')
-        if st.button("Kirish"):
-            if username and password:
-                hashed_password = hash_password(password)
-                user = login_user(username, hashed_password)
-                if user:
-                    st.success(f"Xush kelibsiz, {username}!")
-                    st.write("Bu yerda keyingi sahifaga o‘tish yoki ishga davom etish kodini yozing.")
-                else:
-                    st.error("Login yoki parol noto‘g‘ri!")
-            else:
-                st.error("Iltimos, foydalanuvchi nomi va parolni kiriting!")
+        elif page == "🔬 Lab 1 - WDM":
+            lab1_wdm.app()
+
+        elif page == "💡 Lab 2 - OCDMA":
+            lab2_ocdma.app()
+
+        elif page == "🌐 Lab 3 - PON":
+            lab3_pon.app()
+
+# Streamlit ishga tushganda shu funksiyani chaqiradi
+if __name__ == "__main__":
+    app()
