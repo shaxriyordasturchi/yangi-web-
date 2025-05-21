@@ -32,7 +32,7 @@ def main():
                 st.session_state.logged_in = False
                 st.session_state.username = ""
                 st.experimental_rerun()
-
+                
         elif page == "Lab 1 - WDM":
             lab1_wdm.app()
 
