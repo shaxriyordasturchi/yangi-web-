@@ -1,7 +1,6 @@
 import streamlit as st
 import sqlite3
 
-st.set_page_config(page_title="Admin Panel", layout="wide", page_icon="🛠️")
 
 # CSS uslublari
 st.markdown("""
