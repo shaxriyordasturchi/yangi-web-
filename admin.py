@@ -3,12 +3,12 @@ import sqlite3
 
 st.set_page_config(page_title="Admin Panel", layout="wide", page_icon="🛠️")
 
-# Ranglar uchun CSS uslublari
+# CSS uslublari
 st.markdown("""
     <style>
     .main {
-        background-color: #f0f8ff; /* Oq-ko'k rang (AliceBlue) */
-        color: #003366; /* Qora-ko'k */
+        background-color: #f0f8ff;
+        color: #003366;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .header {
@@ -30,15 +30,25 @@ st.markdown("""
         margin-bottom: 20px;
     }
     .table-header {
-        background-color: #50E3C2; /* Yorqin ko‘k */
+        background-color: #50E3C2;
         color: white;
         font-weight: 600;
         text-align: center;
+        padding: 10px 5px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    td {
+        padding: 8px;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Ma'lumotlar bazasidan foydalanuvchilarni olish
+# Foydalanuvchilarni olish funksiyasi
 def get_users():
     conn = sqlite3.connect("users.db")
     c = conn.cursor()
@@ -55,9 +65,8 @@ st.markdown('<div class="section">', unsafe_allow_html=True)
 st.subheader("Foydalanuvchilar ro‘yxati")
 
 if users:
-    # Jadval yaratish
     st.markdown("""
-    <table style="width: 100%; border-collapse: collapse;">
+    <table>
         <thead>
             <tr>
                 <th class="table-header">Login</th>
@@ -70,20 +79,20 @@ if users:
 
     for user in users:
         st.markdown(f"""
-            <tr style="border-bottom: 1px solid #ccc;">
-                <td style="padding: 8px; text-align: center;">{user[0]}</td>
-                <td style="padding: 8px; text-align: center;">{user[1]}</td>
-                <td style="padding: 8px; text-align: center;">{user[2]}</td>
+            <tr>
+                <td>{user[0]}</td>
+                <td>{user[1]}</td>
+                <td>{user[2]}</td>
             </tr>
         """, unsafe_allow_html=True)
 
     st.markdown("</tbody></table>", unsafe_allow_html=True)
 else:
     st.info("Hech qanday foydalanuvchi topilmadi.")
+
 st.markdown('</div>', unsafe_allow_html=True)
 
-
-# Qo‘shimcha: natijalar bo‘limi (bo‘sh namuna)
+# Laboratoriya natijalari bo‘limi (namuna)
 st.markdown('<div class="section">', unsafe_allow_html=True)
 st.subheader("Laboratoriya Natijalari (Namuna)")
 
