@@ -1,69 +1,42 @@
 import streamlit as st
-import sqlite3
-import hashlib
+from utils import create_user_table, add_user, login_user, hash_password
 
-# Parolni hash qilish funksiyasi
-def make_hashes(password):
-    return hashlib.sha256(str.encode(password)).hexdigest()
-
-# Hashlangan parolni tekshirish funksiyasi
-def check_hashes(password, hashed_text):
-    return make_hashes(password) == hashed_text
-
-# Ma'lumotlar bazasi funksiyalari
-def create_usertable():
-    conn = sqlite3.connect('users.db')
-    c = conn.cursor()
-    c.execute('CREATE TABLE IF NOT EXISTS userstable(username TEXT, password TEXT)')
-    conn.commit()
-    conn.close()
-
-def add_userdata(username, password):
-    conn = sqlite3.connect('users.db')
-    c = conn.cursor()
-    c.execute('INSERT INTO userstable(username, password) VALUES (?, ?)', (username, password))
-    conn.commit()
-    conn.close()
-
-def login_user(username, password):
-    conn = sqlite3.connect('users.db')
-    c = conn.cursor()
-    c.execute('SELECT * FROM userstable WHERE username = ? AND password = ?', (username, password))
-    data = c.fetchall()
-    conn.close()
-    return data
-
-# Kirish sahifasi
 def app():
     st.title("🔐 Foydalanuvchi Kirish")
+
+    # Bazada userlar jadvalini yaratamiz (faqat bir marta)
+    create_user_table()
+
     menu = ["Kirish", "Ro'yxatdan o'tish"]
-    choice = st.selectbox("Amalni tanlang", menu)
+    choice = st.radio("Amalni tanlang", menu)
 
-    create_usertable()
+    if choice == "Ro'yxatdan o'tish":
+        st.subheader("Ro'yxatdan o'tish")
+        new_user = st.text_input("Foydalanuvchi nomi")
+        new_password = st.text_input("Parol", type='password')
+        if st.button("Ro'yxatdan o'tish"):
+            if new_user and new_password:
+                hashed_password = hash_password(new_password)
+                success = add_user(new_user, hashed_password)  # <-- Shu yerda natijani olamiz
+                if success:
+                    st.success("Ro'yxatdan muvaffaqiyatli o'tdingiz!")
+                else:
+                    st.error("Bu foydalanuvchi nomi allaqachon mavjud!")
+            else:
+                st.error("Iltimos, barcha maydonlarni to'ldiring!")
 
-    if choice == "Kirish":
+    elif choice == "Kirish":
         st.subheader("Kirish")
-
         username = st.text_input("Foydalanuvchi nomi")
         password = st.text_input("Parol", type='password')
-
         if st.button("Kirish"):
-            hashed_pwd = make_hashes(password)
-            result = login_user(username, hashed_pwd)
-            if result:
-                st.success(f"Xush kelibsiz, {username}!")
-                st.session_state.logged_in = True
-                st.session_state.username = username
-                st.experimental_rerun()  # Sahifani yangilash
+            if username and password:
+                hashed_password = hash_password(password)
+                user = login_user(username, hashed_password)
+                if user:
+                    st.success(f"Xush kelibsiz, {username}!")
+                    st.write("Bu yerda keyingi sahifaga o‘tish yoki ishga davom etish kodini yozing.")
+                else:
+                    st.error("Login yoki parol noto‘g‘ri!")
             else:
-                st.error("Login yoki parol noto‘g‘ri.")
-
-    elif choice == "Ro'yxatdan o'tish":
-        st.subheader("Yangi foydalanuvchi")
-
-        new_user = st.text_input("Yangi foydalanuvchi nomi")
-        new_password = st.text_input("Yangi parol", type='password')
-
-        if st.button("Ro‘yxatdan o‘tish"):
-            add_userdata(new_user, make_hashes(new_password))
-            st.success("Ro'yxatdan o'tish muvaffaqiyatli. Endi Kirish sahifasiga o'ting.")
+                st.error("Iltimos, foydalanuvchi nomi va parolni kiriting!")
