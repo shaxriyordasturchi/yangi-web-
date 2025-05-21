@@ -1,28 +1,48 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 
 def app():
-    st.title("📡 WDM Kanal Simulyatsiyasi")
+    st.title("🏗️ Laboratoriya 1: WDM Kanal Simulyatsiyasi")
 
-    st.write("Ushbu laboratoriyada 3 ta sinusoidal signal WDM kanalida taqdim etiladi.")
+    # Parametrlar
+    num_signals = st.slider("Kanalga beriladigan signal soni", min_value=1, max_value=5, value=3)
+    signal_power = st.slider("Har bir signalning kuchi", min_value=0.1, max_value=10.0, value=1.0)
+    noise_power = st.slider("Shovqin kuchi", min_value=0.01, max_value=1.0, value=0.1)
 
-    # Signal parametrlari
+    # Signal yaratish
     x = np.linspace(0, 10, 500)
-    signal1 = np.sin(x)
-    signal2 = np.sin(2 * x)
-    signal3 = np.sin(3 * x)
-
-    # Grafik chizish
     fig, ax = plt.subplots()
-    ax.plot(x, signal1, label="Signal 1 (freq = 1 Hz)")
-    ax.plot(x, signal2, label="Signal 2 (freq = 2 Hz)")
-    ax.plot(x, signal3, label="Signal 3 (freq = 3 Hz)")
 
-    ax.set_xlabel("Vaqt (s)")
-    ax.set_ylabel("Signal Amplitudasi")
-    ax.set_title("WDM Kanalidagi 3 ta Signal")
+    total_signal = np.zeros_like(x)
+    for i in range(num_signals):
+        freq = (i + 1) * 0.5
+        signal = signal_power * np.sin(2 * np.pi * freq * x)
+        ax.plot(x, signal, label=f"Signal {i+1}")
+        total_signal += signal
+
+    # Shovqin qo'shish
+    noise = noise_power * np.random.normal(size=x.shape)
+    received_signal = total_signal + noise
+
+    ax.plot(x, received_signal, label="Qabul qilingan signal (shovqin bilan)", color="black", linewidth=2)
+    ax.set_xlabel("Vaqt")
+    ax.set_ylabel("Signal kuchi")
     ax.legend()
-    ax.grid(True)
-
     st.pyplot(fig)
+
+    # Natijalar
+    st.write("### Simulyatsiya natijalari:")
+    st.write(f"- Kanalga berilgan signal soni: {num_signals}")
+    st.write(f"- Signal kuchi: {signal_power}")
+    st.write(f"- Shovqin kuchi: {noise_power}")
+
+    if st.button("Natijalarni PDF ga eksport qilish"):
+        from utils import export_pdf
+        username = st.session_state.get("username", "Anonim")  # agar login bilan bog‘lash bo‘lsa
+        result_data = {
+            "Signal soni": num_signals,
+            "Signal kuchi": signal_power,
+            "Shovqin kuchi": noise_power
+        }
+        export_pdf(username, result_data)
