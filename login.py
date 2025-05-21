@@ -1,51 +1,69 @@
 import streamlit as st
-import login
-import admin
-import lab1_wdm
-import lab2_ocdma
-import lab3_pon
+import sqlite3
+import hashlib
 
+# Parolni hash qilish funksiyasi
+def make_hashes(password):
+    return hashlib.sha256(str.encode(password)).hexdigest()
+
+# Hashlangan parolni tekshirish funksiyasi
+def check_hashes(password, hashed_text):
+    return make_hashes(password) == hashed_text
+
+# Ma'lumotlar bazasi funksiyalari
+def create_usertable():
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+    c.execute('CREATE TABLE IF NOT EXISTS userstable(username TEXT, password TEXT)')
+    conn.commit()
+    conn.close()
+
+def add_userdata(username, password):
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+    c.execute('INSERT INTO userstable(username, password) VALUES (?, ?)', (username, password))
+    conn.commit()
+    conn.close()
+
+def login_user(username, password):
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM userstable WHERE username = ? AND password = ?', (username, password))
+    data = c.fetchall()
+    conn.close()
+    return data
+
+# Kirish sahifasi
 def app():
-    # Session holatini tekshirish va o‘rnatish
-    if "logged_in" not in st.session_state:
-        st.session_state.logged_in = False
-    if "username" not in st.session_state:
-        st.session_state.username = ""
+    st.title("🔐 Foydalanuvchi Kirish")
+    menu = ["Kirish", "Ro'yxatdan o'tish"]
+    choice = st.selectbox("Amalni tanlang", menu)
 
-    # Agar foydalanuvchi login qilmagan bo‘lsa
-    if not st.session_state.logged_in:
-        login.app()
-    else:
-        # Yon panel va sahifa tanlash
-        st.sidebar.title(f"👤 Xush kelibsiz, {st.session_state.username}!")
-        page = st.sidebar.selectbox("Sahifa tanlang", [
-            "🏠 Bosh sahifa",
-            "🛠️ Admin",
-            "🔬 Lab 1 - WDM",
-            "💡 Lab 2 - OCDMA",
-            "🌐 Lab 3 - PON"
-        ])
+    create_usertable()
 
-        if page == "🏠 Bosh sahifa":
-            st.title("🏠 Bosh sahifa")
-            st.success("Siz tizimga muvaffaqiyatli kirdingiz. Quyidagi yon panel orqali sahifalarni tanlang.")
-            if st.button("🔓 Chiqish"):
-                st.session_state.logged_in = False
-                st.session_state.username = ""
-                st.experimental_rerun()
+    if choice == "Kirish":
+        st.subheader("Kirish")
 
-        elif page == "🛠️ Admin":
-            admin.app()
+        username = st.text_input("Foydalanuvchi nomi")
+        password = st.text_input("Parol", type='password')
 
-        elif page == "🔬 Lab 1 - WDM":
-            lab1_wdm.app()
+        if st.button("Kirish"):
+            hashed_pwd = make_hashes(password)
+            result = login_user(username, hashed_pwd)
+            if result:
+                st.success(f"Xush kelibsiz, {username}!")
+                st.session_state.logged_in = True
+                st.session_state.username = username
+                st.experimental_rerun()  # Sahifani yangilash
+            else:
+                st.error("Login yoki parol noto‘g‘ri.")
 
-        elif page == "💡 Lab 2 - OCDMA":
-            lab2_ocdma.app()
+    elif choice == "Ro'yxatdan o'tish":
+        st.subheader("Yangi foydalanuvchi")
 
-        elif page == "🌐 Lab 3 - PON":
-            lab3_pon.app()
+        new_user = st.text_input("Yangi foydalanuvchi nomi")
+        new_password = st.text_input("Yangi parol", type='password')
 
-# Streamlit ishga tushganda shu funksiyani chaqiradi
-if __name__ == "__main__":
-    app()
+        if st.button("Ro‘yxatdan o‘tish"):
+            add_userdata(new_user, make_hashes(new_password))
+            st.success("Ro'yxatdan o'tish muvaffaqiyatli. Endi Kirish sahifasiga o'ting.")
