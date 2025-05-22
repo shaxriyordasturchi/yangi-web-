@@ -1,34 +1,35 @@
 import streamlit as st
+import login
+import lab1_wdm
+import lab2_ocdma
+import lab3_pon
 
-# URL query parametrlarini o‘qish (YANGILANGAN USUL)
-params = st.query_params
-lab = params.get("lab", "lab1")  # default 'lab1'
+def main():
+    if "logged_in" not in st.session_state:
+        st.session_state.logged_in = False
+    if "username" not in st.session_state:
+        st.session_state.username = ""
 
-# Sarlavha
-st.title("🔬 WDM/OCDMA PON laboratoriyalar")
+    if not st.session_state.logged_in:
+        login.app()
+    else:
+        st.sidebar.title(f"Xush kelibsiz, {st.session_state.username}!")
+        page = st.sidebar.selectbox("Sahifa tanlang", ["Bosh sahifa", "Admin", "Lab 1 - WDM", "Lab 2 - OCDMA", "Lab 3 - PON"])
 
-# Parametrga qarab kontentni ko‘rsatish
-if lab == "lab1":
-    from lab1_wdm import run_lab1
-    run_lab1()
+        if page == "Bosh sahifa":
+            st.title("🏠 Bosh sahifa")
+            st.write("Bu asosiy sahifa yoki foydalanuvchi paneli.")
+            if st.button("Chiqish"):
+                st.session_state.logged_in = False
+                st.session_state.username = ""
+                st.experimental_rerun()
+            admin.app()
+        elif page == "Lab 1 - WDM":
+            lab1_wdm.app()
+        elif page == "Lab 2 - OCDMA":
+            lab2_ocdma.app()
+        elif page == "Lab 3 - PON":
+            lab3_pon.app()
 
-elif lab == "lab2":
-    from lab2_ocdma import run_lab2
-    run_lab2()
-
-elif lab == "lab3":
-    from lab3_pon import run_lab3
-    run_lab3()
-
-elif lab == "lab4":
-    from lab4_hybrid import run_lab4
-    run_lab4()
-
-elif lab == "lab5":
-    from lab5_error_correction import run_lab5
-    run_lab5()
-
-else:
-    st.error("❌ Noto‘g‘ri laboratoriya tanlandi.")
-
-
+if __name__ == "__main__":
+    main()
