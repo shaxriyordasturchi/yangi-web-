@@ -1,27 +1,32 @@
 import streamlit as st
 
-# URL query parametrlarini o‘qish
-params = st.experimental_get_query_params()
-lab = params.get("lab", ["lab1"])[0]  # default lab1
+# URL query parametrlarini o‘qish (YANGILANGAN USUL)
+params = st.query_params
+lab = params.get("lab", "lab1")  # default 'lab1'
 
 # Sarlavha
-st.title("WDM/OCDMA PON laboratoriyalar")
+st.title("🔬 WDM/OCDMA PON laboratoriyalar")
 
 # Parametrga qarab kontentni ko‘rsatish
 if lab == "lab1":
-    st.header("Laboratoriya 1 - WDM texnologiyasi")
-    st.write("Bu yerda WDM texnologiyasi bo‘yicha laboratoriya vazifalari joylashgan.")
+    from lab1_wdm import run_lab1
+    run_lab1()
+
 elif lab == "lab2":
-    st.header("Laboratoriya 2 - OCDMA texnologiyasi")
-    st.write("Bu yerda OCDMA texnologiyasi bo‘yicha laboratoriya vazifalari joylashgan.")
+    from lab2_ocdma import run_lab2
+    run_lab2()
+
 elif lab == "lab3":
-    st.header("Laboratoriya 3 - PON texnologiyasi")
-    st.write("Bu yerda PON texnologiyasi bo‘yicha laboratoriya vazifalari joylashgan.")
+    from lab3_pon import run_lab3
+    run_lab3()
+
 elif lab == "lab4":
-    st.header("Laboratoriya 4 - Hybrid sistemalar")
-    st.write("Bu yerda Hybrid WDM/OCDMA/PON tizimlari bo‘yicha laboratoriya vazifalari.")
+    from lab4_hybrid import run_lab4
+    run_lab4()
+
 elif lab == "lab5":
-    st.header("Laboratoriya 5 - Tizim monitoringi va tahlil")
-    st.write("Bu yerda tizim monitoringi va tahlil bo‘yicha laboratoriya vazifalari.")
+    from lab5_error_correction import run_lab5
+    run_lab5()
+
 else:
-    st.write("Noto‘g‘ri laboratoriya tanlandi.")
+    st.error("❌ Noto‘g‘ri laboratoriya tanlandi.")
