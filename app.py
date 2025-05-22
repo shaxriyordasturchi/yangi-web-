@@ -30,3 +30,5 @@ elif lab == "lab5":
 
 else:
     st.error("❌ Noto‘g‘ri laboratoriya tanlandi.")
+
+
