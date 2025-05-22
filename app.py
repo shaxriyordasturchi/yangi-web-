@@ -1,52 +1,27 @@
 import streamlit as st
-from login import app as login_app
-import lab1_wdm
-import lab2_ocdma
-import lab3_pon
-import lab4_hybrid
-import lab5_error_correction
 
-def main():
-    if "logged_in" not in st.session_state:
-        st.session_state.logged_in = False
-    if "username" not in st.session_state:
-        st.session_state.username = ""
+# URL query parametrlarini o‘qish
+params = st.experimental_get_query_params()
+lab = params.get("lab", ["lab1"])[0]  # default lab1
 
-    if not st.session_state.logged_in:
-        login_app()
-    else:
-        st.sidebar.title(f"Xush kelibsiz, {st.session_state.username}!")
-        page = st.sidebar.selectbox("Sahifa tanlang", [
-            "Bosh sahifa",
-            "Lab 1 - WDM",
-            "Lab 2 - OCDMA",
-            "Lab 3 - PON",
-            "Lab 4 - Hybrid WDM/OCDMA",
-            "Lab 5 - Xatoliklarni Tuzatish"
-        ])
+# Sarlavha
+st.title("WDM/OCDMA PON laboratoriyalar")
 
-        if page == "Bosh sahifa":
-            st.title("🏠 Bosh sahifa")
-            st.write("Bu asosiy sahifa yoki foydalanuvchi paneli.")
-            if st.button("Chiqish"):
-                st.session_state.logged_in = False
-                st.session_state.username = ""
-                st.experimental_rerun()
-                
-        elif page == "Lab 1 - WDM":
-            lab1_wdm.app()
-
-        elif page == "Lab 2 - OCDMA":
-            lab2_ocdma.app()
-
-        elif page == "Lab 3 - PON":
-            lab3_pon.app()
-
-        elif page == "Lab 4 - Hybrid WDM/OCDMA":
-            lab4_hybrid.app()
-
-        elif page == "Lab 5 - Xatoliklarni Tuzatish":
-            lab5_error_correction.app()
-
-if __name__ == "__main__":
-    main()
+# Parametrga qarab kontentni ko‘rsatish
+if lab == "lab1":
+    st.header("Laboratoriya 1 - WDM texnologiyasi")
+    st.write("Bu yerda WDM texnologiyasi bo‘yicha laboratoriya vazifalari joylashgan.")
+elif lab == "lab2":
+    st.header("Laboratoriya 2 - OCDMA texnologiyasi")
+    st.write("Bu yerda OCDMA texnologiyasi bo‘yicha laboratoriya vazifalari joylashgan.")
+elif lab == "lab3":
+    st.header("Laboratoriya 3 - PON texnologiyasi")
+    st.write("Bu yerda PON texnologiyasi bo‘yicha laboratoriya vazifalari joylashgan.")
+elif lab == "lab4":
+    st.header("Laboratoriya 4 - Hybrid sistemalar")
+    st.write("Bu yerda Hybrid WDM/OCDMA/PON tizimlari bo‘yicha laboratoriya vazifalari.")
+elif lab == "lab5":
+    st.header("Laboratoriya 5 - Tizim monitoringi va tahlil")
+    st.write("Bu yerda tizim monitoringi va tahlil bo‘yicha laboratoriya vazifalari.")
+else:
+    st.write("Noto‘g‘ri laboratoriya tanlandi.")
