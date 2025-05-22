@@ -1,50 +1,29 @@
 import streamlit as st
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
-st.title("Lab 7 – OCDMA Kodingi va Interferensiya")
+def run_lab7():
+    st.header("📊 Laboratoriya 7 – OCDMA Kodingi va Interferensiya")
 
-st.markdown("""
-OCDMA tizimida kod uzunligi va foydalanuvchi soni asosida interferensiya va BER (Bit Error Rate) tahlili.
-""")
+    st.write("""
+    Ushbu laboratoriyada OCDMA kod uzunligi va foydalanuvchi soni asosida tizimdagi xatolik ehtimolini (BER) tahlil qilamiz.
+    """)
 
-# Parametrlar
-code_length = st.slider("Kod uzunligi (chiplar soni):", min_value=8, max_value=128, value=32, step=8)
-num_users = st.slider("Foydalanuvchi soni:", min_value=1, max_value=50, value=10, step=1)
+    # Kirish parametrlar
+    code_length = st.slider("🔢 Kod uzunligi (chiplar soni)", min_value=31, max_value=511, value=127, step=32)
+    max_users = st.slider("👥 Maksimal foydalanuvchi soni", min_value=5, max_value=100, value=50, step=5)
 
-# BER hisoblash (soddalashtirilgan model):
-# BER ≈ 0.5 * erfc(sqrt(code_length / (2 * (num_users - 1))))
-# erfc — komplementar xato funktsiyasi, scipy kutubxonasidan kerak, ammo soddalashtirish uchun approx qilamiz.
+    users = np.arange(1, max_users + 1)
+    ber = np.exp(users / (2 * code_length)) - 1
+    ber = np.clip(ber, 0, 1)  # BER qiymati 0–1 oraliqda bo'lishi kerak
 
-from math import sqrt, erfc
+    # Grafik
+    fig, ax = plt.subplots()
+    ax.plot(users, ber, marker='o', color='crimson')
+    ax.set_xlabel("Foydalanuvchilar soni")
+    ax.set_ylabel("Bit Error Rate (BER)")
+    ax.set_title("OCDMA: BER vs Foydalanuvchilar soni")
+    ax.grid(True)
+    st.pyplot(fig)
 
-if num_users > 1:
-    ber = 0.5 * erfc(sqrt(code_length / (2 * (num_users - 1))))
-else:
-    ber = 0.0
-
-st.write(f"**BER (Bit Error Rate):** {ber:.4e}")
-
-# Grafik: Foydalanuvchi soni vs BER turli kod uzunliklarida
-
-users_range = np.arange(1, 51)
-code_lengths = [8, 16, 32, 64, 128]
-plt.figure(figsize=(8,5))
-
-for cl in code_lengths:
-    ber_arr = []
-    for u in users_range:
-        if u > 1:
-            val = 0.5 * erfc(sqrt(cl / (2 * (u - 1))))
-        else:
-            val = 0
-        ber_arr.append(val)
-    plt.plot(users_range, ber_arr, label=f"Kod uzunligi: {cl}")
-
-plt.yscale('log')
-plt.xlabel("Foydalanuvchi soni")
-plt.ylabel("BER (log scale)")
-plt.title("Foydalanuvchi soni va BER (log-o'lcham)")
-plt.grid(True, which='both', linestyle='--')
-plt.legend()
-st.pyplot(plt.gcf())
+    st.success(f"{max_users} ta foydalanuvchi va kod uzunligi {code_length} bo‘lsa, BER ≈ {ber[-1]:.4f}")
