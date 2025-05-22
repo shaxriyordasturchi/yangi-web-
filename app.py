@@ -1,56 +1,54 @@
 import streamlit as st
 
-# 10 ta laboratoriya menyusi
-labs = {
-    "Laboratoriya 1 - WDM texnologiyasi": "lab1",
-    "Laboratoriya 2 - OCDMA texnologiyasi": "lab2",
-    "Laboratoriya 3 - PON texnologiyasi": "lab3",
-    "Laboratoriya 4 - Hybrid sistemalar": "lab4",
-    "Laboratoriya 5 - Tizim monitoringi va tahlil": "lab5",
-    "Laboratoriya 6 – Spektral Samaradorlik Analizi": "lab6",
-    "Laboratoriya 7 – OCDMA Kodingi va Interferensiya": "lab7",
-    "Laboratoriya 8 – PON Delay Tahlili": "lab8",
-    "Laboratoriya 9 – Hybrid Tarmoqda Faol Foydalanuvchilar Yuki": "lab9",
-    "Laboratoriya 10 – BER tahlili barcha texnologiyalarda": "lab10"
-}
+# 6–10 laboratoriyalarni import qilish
+from lab6_spektr import run_lab6
+from lab7_ocdma import run_lab7
+from lab8_pon_delay import run_lab8
+from lab9_hybrid_load import run_lab9
+from lab10_ber_comparison import run_lab10
 
-# Sahifa sarlavhasi
-st.title("WDM/OCDMA/PON laboratoriya modullari")
+# URL query parametrlarini o‘qish
+params = st.experimental_get_query_params()
+lab = params.get("lab", ["lab1"])[0]  # default lab1
 
-# Sidebar'dan laboratoriya tanlash
-choice = st.sidebar.selectbox("📘 Sahifani tanlang:", list(labs.keys()))
-lab = labs[choice]
+# Sarlavha
+st.title("🔬 WDM/OCDMA PON laboratoriyalar")
 
-# Har bir laboratoriya bo‘yicha ma'lumot
+# Parametrga qarab kontentni ko‘rsatish
 if lab == "lab1":
     st.header("Laboratoriya 1 - WDM texnologiyasi")
     st.write("Bu yerda WDM texnologiyasi bo‘yicha laboratoriya vazifalari joylashgan.")
+
 elif lab == "lab2":
     st.header("Laboratoriya 2 - OCDMA texnologiyasi")
     st.write("Bu yerda OCDMA texnologiyasi bo‘yicha laboratoriya vazifalari joylashgan.")
+
 elif lab == "lab3":
     st.header("Laboratoriya 3 - PON texnologiyasi")
     st.write("Bu yerda PON texnologiyasi bo‘yicha laboratoriya vazifalari joylashgan.")
+
 elif lab == "lab4":
     st.header("Laboratoriya 4 - Hybrid sistemalar")
     st.write("Bu yerda Hybrid WDM/OCDMA/PON tizimlari bo‘yicha laboratoriya vazifalari.")
+
 elif lab == "lab5":
     st.header("Laboratoriya 5 - Tizim monitoringi va tahlil")
     st.write("Bu yerda tizim monitoringi va tahlil bo‘yicha laboratoriya vazifalari.")
+
 elif lab == "lab6":
-    st.header("Laboratoriya 6 – Spektral Samaradorlik Analizi")
-    st.write("WDM tizimlarida kanal soni oshgani sari spektral samaradorlik qanday o'zgarishini ko'rsatadi.")
+    run_lab6()
+
 elif lab == "lab7":
-    st.header("Laboratoriya 7 – OCDMA Kodingi va Interferensiya")
-    st.write("OCDMA kod uzunligi va foydalanuvchi soni asosida interferensiya tahlili.")
+    run_lab7()
+
 elif lab == "lab8":
-    st.header("Laboratoriya 8 – PON Delay Tahlili")
-    st.write("PON tarmog‘ida masofa va foydalanuvchi soni asosida kechikish (delay) aniqlanadi.")
+    run_lab8()
+
 elif lab == "lab9":
-    st.header("Laboratoriya 9 – Hybrid Tarmoqda Faol Foydalanuvchilar Yuki")
-    st.write("WDM-OCDMA-PON tarmoqlarida bir vaqtning o‘zida faol foydalanuvchilar soni bilan yuklanish tahlili.")
+    run_lab9()
+
 elif lab == "lab10":
-    st.header("Laboratoriya 10 – BER tahlili barcha texnologiyalarda")
-    st.write("WDM, OCDMA, PON va ularning gibridlarida BER (Bit Error Rate) taqqoslanadi.")
+    run_lab10()
+
 else:
-    st.warning("Noto‘g‘ri laboratoriya tanlandi.")
+    st.error("❌ Noto‘g‘ri laboratoriya tanlandi.")
