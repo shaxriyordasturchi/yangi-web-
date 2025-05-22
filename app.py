@@ -1,11 +1,23 @@
 import streamlit as st
 
-# URL query parametrlarini o‘qish
-params = st.experimental_get_query_params()
-lab = params.get("lab", ["lab1"])[0]  # default lab1
+# Sidebar orqali laboratoriya tanlash
+labs = {
+    "Laboratoriya 1 - WDM texnologiyasi": "lab1",
+    "Laboratoriya 2 - OCDMA texnologiyasi": "lab2",
+    "Laboratoriya 3 - PON texnologiyasi": "lab3",
+    "Laboratoriya 4 - Hybrid sistemalar": "lab4",
+    "Laboratoriya 5 - Tizim monitoringi va tahlil": "lab5",
+    "Laboratoriya 6 – Spektral Samaradorlik Analizi": "lab6",
+    "Laboratoriya 7 – OCDMA Kodingi va Interferensiya": "lab7",
+    "Laboratoriya 8 – PON Delay Tahlili": "lab8",
+    "Laboratoriya 9 – Hybrid Tarmoqda Faol Foydalanuvchilar Yuki": "lab9",
+    "Laboratoriya 10 – BER tahlili barcha texnologiyalarda": "lab10",
+}
 
-# Sarlavha
 st.title("WDM/OCDMA PON laboratoriyalar")
+
+choice = st.sidebar.selectbox("Laboratoriyani tanlang:", list(labs.keys()))
+lab = labs[choice]
 
 # Parametrga qarab kontentni ko‘rsatish
 if lab == "lab1":
