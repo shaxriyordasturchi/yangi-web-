@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Sidebar orqali laboratoriya tanlash
+# 10 ta laboratoriya menyusi
 labs = {
     "Laboratoriya 1 - WDM texnologiyasi": "lab1",
     "Laboratoriya 2 - OCDMA texnologiyasi": "lab2",
@@ -11,15 +11,17 @@ labs = {
     "Laboratoriya 7 – OCDMA Kodingi va Interferensiya": "lab7",
     "Laboratoriya 8 – PON Delay Tahlili": "lab8",
     "Laboratoriya 9 – Hybrid Tarmoqda Faol Foydalanuvchilar Yuki": "lab9",
-    "Laboratoriya 10 – BER tahlili barcha texnologiyalarda": "lab10",
+    "Laboratoriya 10 – BER tahlili barcha texnologiyalarda": "lab10"
 }
 
-st.title("WDM/OCDMA PON laboratoriyalar")
+# Sahifa sarlavhasi
+st.title("WDM/OCDMA/PON laboratoriya modullari")
 
-choice = st.sidebar.selectbox("Laboratoriyani tanlang:", list(labs.keys()))
+# Sidebar'dan laboratoriya tanlash
+choice = st.sidebar.selectbox("📘 Sahifani tanlang:", list(labs.keys()))
 lab = labs[choice]
 
-# Parametrga qarab kontentni ko‘rsatish
+# Har bir laboratoriya bo‘yicha ma'lumot
 if lab == "lab1":
     st.header("Laboratoriya 1 - WDM texnologiyasi")
     st.write("Bu yerda WDM texnologiyasi bo‘yicha laboratoriya vazifalari joylashgan.")
@@ -51,4 +53,4 @@ elif lab == "lab10":
     st.header("Laboratoriya 10 – BER tahlili barcha texnologiyalarda")
     st.write("WDM, OCDMA, PON va ularning gibridlarida BER (Bit Error Rate) taqqoslanadi.")
 else:
-    st.write("Noto‘g‘ri laboratoriya tanlandi.")
+    st.warning("Noto‘g‘ri laboratoriya tanlandi.")
